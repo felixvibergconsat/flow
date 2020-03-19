@@ -1,0 +1,16 @@
+.svarte_petter_pie{
+	border: solid;
+}
+
+.graph{
+	width: 20%;
+	display: inline-block;
+	border: solid;
+}
+
+.graph_holder{
+	border: dashed;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

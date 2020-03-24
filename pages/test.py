@@ -5,7 +5,7 @@ import dash_table
 from app import app
 import os
 import numpy as np
-import pandas as pd
+#import pandas as pd
 from functions import machines, SQL_Handler
 
 
@@ -14,28 +14,34 @@ with open('env') as env_data:
         s = str(line).split('=')
         os.environ[s[0]] = s[1][:-1]
 
-d = {'blue':[0, 0, ''],
-        'green':[1, 0, ''],
-        'yellow':[0, 0, ''],
-        'white':[0, 0, ''],
-        'stop':[0, 0, ''],
-        'do_blue':[0, 0, ''],
-        'do_green':[0, 0, ''],
-        'do_yellow':[0, 0, ''],
-        'do_white':[0, 0, ''],
-        'do_stop':[0, 0, '']}
-
 sql = SQL_Handler.SQL_Handler()
 
-Cell_10 = machines.Cell_10(d)
-AM_2 = machines.AM_2(d)
-Laser_2 = machines.Laser_2(d)
-Preservation_2 = machines.Preservation_2(d)
-Wrap_2 = machines.Wrap_2(d)
-Carton_2 = machines.Carton_2(d)
-Conv_2 = machines.Conv_2(d)
-msks = [Carton_2, Conv_2, Wrap_2, Preservation_2, Laser_2, AM_2, Cell_10]
-svarte_petter_arr = np.zeros(len(msks))
+
+
+OR1 = machines.Station(*sql.get_state('OR1'))
+IR1 = machines.Station(*sql.get_state('IR1'))
+RG1 = machines.Station(*sql.get_state('RG1'))
+RS1 = machines.Station(*sql.get_state('RS1'))
+CP1 = machines.Station(*sql.get_state('CP1'))
+MP1 = machines.Station(*sql.get_state('MP1'))
+AM1 = machines.Station(*sql.get_state('AM1'))
+CONV1 = machines.Station(*sql.get_state('CONV1'))
+
+
+OR2 = machines.Station(*sql.get_state('OR2'))
+IR2 = machines.Station(*sql.get_state('IR2'))
+RG2 = machines.Station(*sql.get_state('RG2'))
+RS2 = machines.Station(*sql.get_state('RS2'))
+CP2 = machines.Station(*sql.get_state('CP2'))
+MP2 = machines.Station(*sql.get_state('MP2'))
+AM2 = machines.Station(*sql.get_state('AM2'))
+CONV2 = machines.Station(*sql.get_state('CONV2'))
+
+msks = [OR1, IR1, RG1, RS1, CP1, MP1, AM1, CONV1, OR2, IR2, RG2, RS2, CP2, MP2, AM2, CONV2]
+print(AM1.state)
+print(AM2.state)
+print(CONV1.state)
+print(CONV2.state)
 
 layout = html.Div([
     html.H3('Svarte Petter'),
@@ -44,8 +50,6 @@ layout = html.Div([
         interval = 2000,
         n_intervals = 0
         ),
-    html.Div(className='svarte_petter_pie', id='svarte_petter_pie'),
-    #dcc.Link('Go to App 2', href='/apps/app2')
 ])
 
 
@@ -55,31 +59,43 @@ layout = html.Div([
 def display_value(value):
     d = sql.refresh()
     if d is not None:
-        for i, station in enumerate(d[:, -1]):
+        for i, station in enumerate(d[:, 1]):
             station_stripped = station.rstrip()
-            attr = d[i, 1].split('.')[-1]
-            status = int(d[i, 3])
-
-            if station_stripped == 'Cell_10':
-                Cell_10.new_status(attr, status)
-
+            
+            if station_stripped == 'OR1':
+                OR1.new_status(d[i, :])
+            if station_stripped == 'IR1':
+                IR1.new_status(d[i, :])
+            if station_stripped == 'RG1':
+                RG1.new_status(d[i, :])
+            if station_stripped == 'RS1':
+                RS1.new_status(d[i, :])
+            if station_stripped == 'CP1':
+                CP1.new_status(d[i, :])
+            if station_stripped == 'MP1':
+                MP1.new_status(d[i, :])
+            if station_stripped == 'AM1':
+                AM1.new_status(d[i, :])
+            if station_stripped == 'CONV1':
+                CONV1.new_status(d[i, :])
+            
+            
+            if station_stripped == 'OR2':
+                OR2.new_status(d[i, :])
+            if station_stripped == 'IR2':
+                IR2.new_status(d[i, :])
+            if station_stripped == 'RG2':
+                RG2.new_status(d[i, :])
+            if station_stripped == 'RS2':
+                RS2.new_status(d[i, :])
+            if station_stripped == 'CP2':
+                CP2.new_status(d[i, :])
+            if station_stripped == 'MP2':
+                MP2.new_status(d[i, :])
             if station_stripped == 'AM2':
-                AM_2.new_status(attr, status)
-
-            if station_stripped == 'Laser2':
-                Laser_2.new_status(attr, status)
-
-            if station_stripped == 'Preservation2':
-                Preservation_2.new_status(attr, status)
-
-            if station_stripped == 'Wrap2':
-                Wrap_2.new_status(attr, status)
-
-            if station_stripped == 'Carton2':
-                Carton_2.new_status(attr, status)
-                
-            if station_stripped == 'Conv2':
-                Conv_2.new_status(attr, status)
+                AM2.new_status(d[i, :])
+            if station_stripped == 'CONV2':
+                CONV2.new_status(d[i, :])
 
     data = []
     beacon = []
@@ -89,10 +105,13 @@ def display_value(value):
         data.append([{
             'values': msk.get_portion(),
             'type': 'pie',
-            'text': ['running', 'stopped'],
+            'text': ['alarm', 'producing', 'waiting', 'off'],
             'textposition': 'above',
             'showlegend': False,
             'hole': .48,
+            'sort': False,
+            'marker': {'colors': ['#d62728', '#2ca02c','#ff7f0e','#7f7f7f'],
+                       'line': {'width': 2}}
             }])
         layout.append({
             'magin': {
@@ -107,129 +126,30 @@ def display_value(value):
                 'b': 0,
                 't': 0,
                 },
-            'title': msk.name,
-            'height': 300,
-            'widht': 300
-            })
-        beacon.append([{
-            'type': 'heatmap',
-            'x': ['solid', 'blinking'],
-            'y': ['green','blue','yellow','white','stop'],
-            'z': msk.get_beacon(),
-            'zmax': 2,
-            'zmin': -1,
-            'showscale': False,
-            'colorscale': 'Greys'
-            }])
-        b_layout.append({
-            'magin': {
-                'l': 0,
-                'r': 0,
-                'b': 0,
-                't': 0,
+            'annotations': [{
+                'font': {'size': 30},
+                'text': '{}'.format(msk.name),
+                'showarrow': False,
+                'x': -0.1,
+                'y': 1.2,
                 },
-            'padding': {
-                'l': 0,
-                'r': 0,
-                'b': 0,
-                't': 0,
-                },
-            'height': 300
+                {
+                'font': {'size': 10},
+                'text': '<b>>{}<</b>'.format(msk.state['state']),
+                'showarrow': False,
+                'x': -0.1,
+                'y': 1.1,
+                }
+                ],
+            'height': 500,
+            'widht': 500
             })
 
 
     return html.Div(className='graph_holder', children=[
             html.Div(className='graph', children=[
                 dcc.Graph(id='graph',
-                    figure={'data': data[0], 'layout': layout[0]}),
-                dcc.Graph(id='map',
-                    figure={'data': beacon[0], 'layout': b_layout[0]})
-                ]),
-            html.Div(className='graph', children=[
-                dcc.Graph(id='graph',
-                    figure={'data': data[1], 'layout': layout[1]}),
-                dcc.Graph(id='map',
-                    figure={'data': beacon[1], 'layout': b_layout[0]})
-                
-                ]),
-            html.Div(className='graph', children=[
-                dcc.Graph(id='graph',
-                    figure={'data': data[2], 'layout': layout[2]}),
-                dcc.Graph(id='map',
-                    figure={'data': beacon[2], 'layout': b_layout[0]})
-                
-                ]),
-            html.Div(className='graph', children=[
-                dcc.Graph(id='graph',
-                    figure={'data': data[3], 'layout': layout[3]}),
-                dcc.Graph(id='map',
-                    figure={'data': beacon[3], 'layout': b_layout[0]})
-                
-                ]),
-            html.Div(className='graph', children=[
-                dcc.Graph(id='graph',
-                    figure={'data': data[4], 'layout': layout[4]}),
-                dcc.Graph(id='map',
-                    figure={'data': beacon[4], 'layout': b_layout[0]})
-                
-                ]),
-            html.Div(className='graph', children=[
-                dcc.Graph(id='graph',
-                    figure={'data': data[5], 'layout': layout[5]}),
-                dcc.Graph(id='map',
-                    figure={'data': beacon[5], 'layout': b_layout[0]})
-                
-                ]),
-            html.Div(className='graph', children=[
-                dcc.Graph(id='graph',
-                    figure={'data': data[6], 'layout': layout[6]}),
-                dcc.Graph(id='map',
-                    figure={'data': beacon[6], 'layout': b_layout[0]})
-                
-                ]),
-        ])
+                    figure={'data': data[i], 'layout': layout[i]}),
+                ])
+        for i in range(len(data))])
 
-    
-@app.callback(
-    Output('svarte_petter_pie', 'children'),
-    [Input('interval_component', 'n_intervals')])
-def display_value(value):
-    for i, msk in enumerate(msks):
-        msk.update_stats()
-
-    for i, msk in enumerate(msks):
-        if msk.running == 0:
-            if sum(svarte_petter_arr) == 0:
-                svarte_petter_arr[i] = 1
-            if svarte_petter_arr[i] == 1:
-                msk.svarte_petter_time += 1
-        else:
-            svarte_petter_arr[i] = 0
-    
-    portions = [msk.svarte_petter_time for msk in msks]
-    texts = [msk.name for msk in msks]
-    data = [{
-        'values': portions,
-        'type': 'pie',
-        'text': texts,
-        'textposition': 'above',
-        'showlegend': False,
-        'domain': {'y': [0.3, 0.7]},
-        'hole': .48
-        }]
-    v_layout = {
-        'magin': {
-            'l': 100,
-            'r': 100,
-            'b': 100,
-            't': 100,
-            },
-        'height': 800,
-        }
-    
-
-    return html.Div([
-        dcc.Graph(id='graph',
-            figure={'data': data, 'layout': v_layout}
-            )
-        ])

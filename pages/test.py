@@ -16,32 +16,41 @@ with open('env') as env_data:
 
 sql = SQL_Handler.SQL_Handler()
 
-
-
-OR1 = machines.Station(*sql.get_state('MP1_OR'))
-IR1 = machines.Station(*sql.get_state('MP1_IR'))
-RG1 = machines.Station(*sql.get_state('MP1_RG'))
-RS1 = machines.Station(*sql.get_state('MP1_RS'))
-CP1 = machines.Station(*sql.get_state('MP1_CP'))
+MP1_OR = machines.Station(*sql.get_state('MP1_OR'))
+MP1_IR = machines.Station(*sql.get_state('MP1_IR'))
+MP1_RG = machines.Station(*sql.get_state('MP1_RG'))
+MP1_CP = machines.Station(*sql.get_state('MP1_CP'))
 MP1 = machines.Station(*sql.get_state('MP1'))
+AM1_RS = machines.Station(*sql.get_state('AM1_RS'))
 AM1 = machines.Station(*sql.get_state('AM1'))
+LASER1 = machines.Station(*sql.get_state('LASER1'))
+PRESERVATION1 = machines.Station(*sql.get_state('PRESERVATION1'))
+WRAP1 = machines.Station(*sql.get_state('WRAP1'))
 CONV1 = machines.Station(*sql.get_state('CONV1'))
+CARTON1 = machines.Station(*sql.get_state('CARTON1'))
+PACK1 = machines.Station(*sql.get_state('PACK1'))
 
-
-OR2 = machines.Station(*sql.get_state('MP2_OR'))
-IR2 = machines.Station(*sql.get_state('MP2_IR'))
-RG2 = machines.Station(*sql.get_state('MP2_RG'))
-RS2 = machines.Station(*sql.get_state('MP2_RS'))
-CP2 = machines.Station(*sql.get_state('MP2_CP'))
+MP2_OR = machines.Station(*sql.get_state('MP2_OR'))
+MP2_IR = machines.Station(*sql.get_state('MP2_IR'))
+MP2_RG = machines.Station(*sql.get_state('MP2_RG'))
+MP2_CP = machines.Station(*sql.get_state('MP2_CP'))
 MP2 = machines.Station(*sql.get_state('MP2'))
+AM2_RS = machines.Station(*sql.get_state('AM2_RS'))
 AM2 = machines.Station(*sql.get_state('AM2'))
+LASER2 = machines.Station(*sql.get_state('LASER2'))
+PRESERVATION2 = machines.Station(*sql.get_state('PRESERVATION2'))
+WRAP2 = machines.Station(*sql.get_state('WRAP2'))
 CONV2 = machines.Station(*sql.get_state('CONV2'))
+CARTON2 = machines.Station(*sql.get_state('CARTON2'))
+PACK2 = machines.Station(*sql.get_state('PACK2'))
 
-msks = [OR1, IR1, RG1, RS1, CP1, MP1, AM1, CONV1, OR2, IR2, RG2, RS2, CP2, MP2, AM2, CONV2]
-print(AM1.state)
-print(AM2.state)
-print(CONV1.state)
-print(CONV2.state)
+BOX = machines.Station(*sql.get_state('BOX'))
+
+DD01 = [MP1_OR, MP1_IR, MP1_RG, MP1_CP, MP1, AM1_RS, AM1, LASER1, PRESERVATION1, WRAP1, CONV1, CARTON1, PACK1]
+DD02 = [MP2_OR, MP2_IR, MP2_RG, MP2_CP, MP2, AM2_RS, AM2, LASER2, PRESERVATION2, WRAP2, CONV2, CARTON2, PACK2]
+
+msks = DD01+DD02
+msks.append(BOX)
 
 layout = html.Div(className='maachine_pies', children=[
     html.H1('Svarte Petter'),
@@ -62,40 +71,58 @@ def display_value(value):
         for i, station in enumerate(d[:, 1]):
             station_stripped = station.rstrip()
             
-            if station_stripped == 'OR1':
-                OR1.new_status(d[i, :])
-            if station_stripped == 'IR1':
-                IR1.new_status(d[i, :])
-            if station_stripped == 'RG1':
-                RG1.new_status(d[i, :])
-            if station_stripped == 'RS1':
-                RS1.new_status(d[i, :])
-            if station_stripped == 'CP1':
-                CP1.new_status(d[i, :])
+            if station_stripped == 'MP1_OR':
+                MP1_OR.new_status(d[i, :])
+            if station_stripped == 'MP1_IR':
+                MP1_IR.new_status(d[i, :])
+            if station_stripped == 'MP1_RG':
+                MP1_RG.new_status(d[i, :])
+            if station_stripped == 'MP1_CP':
+                MP1_CP.new_status(d[i, :])
             if station_stripped == 'MP1':
                 MP1.new_status(d[i, :])
+            if station_stripped == 'AM1_RS':
+                AM1_RS.new_status(d[i, :])
             if station_stripped == 'AM1':
                 AM1.new_status(d[i, :])
+            if station_stripped == 'LASER1':
+                LASER1.new_status(d[i, :])
+            if station_stripped == 'PRESERVATION1':
+                PRESERVATION1.new_status(d[i, :])
+            if station_stripped == 'WRAP1':
+                WRAP1.new_status(d[i, :])
             if station_stripped == 'CONV1':
                 CONV1.new_status(d[i, :])
+            if station_stripped == 'PACK1':
+                PACK1.new_status(d[i, :])
             
-            
-            if station_stripped == 'OR2':
-                OR2.new_status(d[i, :])
-            if station_stripped == 'IR2':
-                IR2.new_status(d[i, :])
-            if station_stripped == 'RG2':
-                RG2.new_status(d[i, :])
-            if station_stripped == 'RS2':
-                RS2.new_status(d[i, :])
-            if station_stripped == 'CP2':
-                CP2.new_status(d[i, :])
+            if station_stripped == 'MP2_OR':
+                MP2_OR.new_status(d[i, :])
+            if station_stripped == 'MP2_IR':
+                MP2_IR.new_status(d[i, :])
+            if station_stripped == 'MP2_RG':
+                MP2_RG.new_status(d[i, :])
+            if station_stripped == 'MP2_CP':
+                MP2_CP.new_status(d[i, :])
             if station_stripped == 'MP2':
                 MP2.new_status(d[i, :])
+            if station_stripped == 'AM2_RS':
+                AM2_RS.new_status(d[i, :])
             if station_stripped == 'AM2':
                 AM2.new_status(d[i, :])
+            if station_stripped == 'LASER2':
+                LASER2.new_status(d[i, :])
+            if station_stripped == 'PRESERVATION2':
+                PRESERVATION2.new_status(d[i, :])
+            if station_stripped == 'WRAP2':
+                WRAP2.new_status(d[i, :])
             if station_stripped == 'CONV2':
                 CONV2.new_status(d[i, :])
+            if station_stripped == 'PACK2':
+                PACK2.new_status(d[i, :])
+            
+            if station_stripped == 'BOX':
+                BOX.new_status(d[i, :])
 
     data = []
     beacon = []

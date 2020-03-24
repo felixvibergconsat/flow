@@ -18,21 +18,21 @@ sql = SQL_Handler.SQL_Handler()
 
 
 
-OR1 = machines.Station(*sql.get_state('OR1'))
-IR1 = machines.Station(*sql.get_state('IR1'))
-RG1 = machines.Station(*sql.get_state('RG1'))
-RS1 = machines.Station(*sql.get_state('RS1'))
-CP1 = machines.Station(*sql.get_state('CP1'))
+OR1 = machines.Station(*sql.get_state('MP1_OR'))
+IR1 = machines.Station(*sql.get_state('MP1_IR'))
+RG1 = machines.Station(*sql.get_state('MP1_RG'))
+RS1 = machines.Station(*sql.get_state('MP1_RS'))
+CP1 = machines.Station(*sql.get_state('MP1_CP'))
 MP1 = machines.Station(*sql.get_state('MP1'))
 AM1 = machines.Station(*sql.get_state('AM1'))
 CONV1 = machines.Station(*sql.get_state('CONV1'))
 
 
-OR2 = machines.Station(*sql.get_state('OR2'))
-IR2 = machines.Station(*sql.get_state('IR2'))
-RG2 = machines.Station(*sql.get_state('RG2'))
-RS2 = machines.Station(*sql.get_state('RS2'))
-CP2 = machines.Station(*sql.get_state('CP2'))
+OR2 = machines.Station(*sql.get_state('MP2_OR'))
+IR2 = machines.Station(*sql.get_state('MP2_IR'))
+RG2 = machines.Station(*sql.get_state('MP2_RG'))
+RS2 = machines.Station(*sql.get_state('MP2_RS'))
+CP2 = machines.Station(*sql.get_state('MP2_CP'))
 MP2 = machines.Station(*sql.get_state('MP2'))
 AM2 = machines.Station(*sql.get_state('AM2'))
 CONV2 = machines.Station(*sql.get_state('CONV2'))
@@ -43,9 +43,9 @@ print(AM2.state)
 print(CONV1.state)
 print(CONV2.state)
 
-layout = html.Div([
-    html.H3('Svarte Petter'),
-    html.Div(className='maachine_pies', id='machine_pies'),
+layout = html.Div(className='maachine_pies', children=[
+    html.H1('Svarte Petter'),
+    html.Div(id='machine_pies'),
     dcc.Interval(id='interval_component',
         interval = 2000,
         n_intervals = 0
@@ -108,6 +108,7 @@ def display_value(value):
             'text': ['alarm', 'producing', 'waiting', 'off'],
             'textposition': 'above',
             'showlegend': False,
+            'rotation': 45,
             'hole': .48,
             'sort': False,
             'marker': {'colors': ['#d62728', '#2ca02c','#ff7f0e','#7f7f7f'],
